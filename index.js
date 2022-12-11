@@ -67,6 +67,8 @@ const getRealType = (value) => {
         return 'regexp';
     } else if (value instanceof Set) {
         return 'set';
+    } else if (value instanceof Error) {
+        return 'error';
     } else if (Number.isNaN(value)) {
         return 'NaN';
     } else if (value === null) {
@@ -142,6 +144,9 @@ const knownTypes = [
     new Date(),
     new RegExp('\\w+'),
     new Set(),
+    123n,
+    Error(),
+    Symbol('foo'),
 ];
 
 test('Check basic types', getTypesOfItems(knownTypes), [
@@ -158,6 +163,9 @@ test('Check basic types', getTypesOfItems(knownTypes), [
     'object',
     'object',
     'object',
+    'bigint',
+    'object',
+    'symbol',
 ]);
 
 test('Check real types', getRealTypesOfItems(knownTypes), [
@@ -174,7 +182,9 @@ test('Check real types', getRealTypesOfItems(knownTypes), [
     'date',
     'regexp',
     'set',
-    // What else?
+    'bigint',
+    'error',
+    'symbol',
 ]);
 
 testBlock('everyItemHasAUniqueRealType');
