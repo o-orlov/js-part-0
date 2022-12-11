@@ -28,6 +28,7 @@ const test = (whatWeTest, actualResult, expectedResult) => {
 
 const getType = (value) => {
     // Return string with a native JS type of value
+    return typeof value;
 };
 
 const getTypesOfItems = (arr) => {
