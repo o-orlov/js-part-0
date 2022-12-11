@@ -59,10 +59,31 @@ const getRealType = (value) => {
     //     getRealType(NaN)        // 'NaN'
     // Use typeof, instanceof and some magic. It's enough to have
     // 12-13 unique types but you can find out in JS even more :)
+    if (Array.isArray(value)) {
+        return 'array';
+    } else if (value instanceof Date) {
+        return 'date';
+    } else if (value instanceof RegExp) {
+        return 'regexp';
+    } else if (value instanceof Set) {
+        return 'set';
+    } else if (Number.isNaN(value)) {
+        return 'NaN';
+    } else if (value === null) {
+        return 'null';
+    } else if (value === Infinity) {
+        return 'Infinity';
+    }
+    return typeof value;
 };
 
 const getRealTypesOfItems = (arr) => {
     // Return array with real types of items of given array
+    const realTypesArr = [];
+    for (const el of arr) {
+        realTypesArr.push(getRealType(el));
+    }
+    return realTypesArr;
 };
 
 const everyItemHasAUniqueRealType = (arr) => {
