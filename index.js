@@ -228,4 +228,11 @@ test('Counted unique types are sorted', countRealTypes([{}, null, true, !null, !
     ['object', 1],
 ]);
 
-// Add several positive and negative tests
+testBlock('new String() VS String()');
+
+test('All values are strings', allItemsHaveTheSameType('123', String('123')), true);
+test('Not all values are strings', allItemsHaveTheSameType('123', new String('123')), true);
+
+testBlock('null VS undefined');
+
+test('Arrays are not equal', areEqual([1, null, 3], [1, undefined, 3]), false);
