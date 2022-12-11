@@ -91,6 +91,11 @@ const getRealTypesOfItems = (arr) => {
 const everyItemHasAUniqueRealType = (arr) => {
     // Return true if there are no items in array
     // with the same real type
+    if (arr.length > 0) {
+        const realTypesSet = new Set(getRealTypesOfItems(arr));
+        return realTypesSet.size === arr.length;
+    }
+    return true;
 };
 
 const countRealTypes = (arr) => {
