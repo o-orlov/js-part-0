@@ -7,7 +7,7 @@ const testBlock = (name) => {
 
 const areEqual = (a, b) => {
     if (Array.isArray(a) && Array.isArray(b)) {
-        return a.length === b.length && a.every((element, index) => element === b[index]);
+        return a.length === b.length && a.every((element, index) => areEqual(element, b[index]));
     }
     return a === b;
 };
@@ -102,6 +102,20 @@ const countRealTypes = (arr) => {
     // Return an array of arrays with a type and count of items
     // with this type in the input array, sorted by type.
     // Like an Object.entries() result: [['boolean', 3], ['string', 5]]
+    if (!arr) {
+        return [];
+    }
+
+    const realTypesArr = getRealTypesOfItems(arr);
+    realTypesArr.sort();
+
+    const realTypesMap = new Map();
+    for (const realType of realTypesArr) {
+        const count = realTypesMap.get(realType);
+        realTypesMap.set(realType, count !== undefined ? count + 1 : 1);
+    }
+
+    return [...realTypesMap];
 };
 
 // Tests
