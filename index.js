@@ -33,10 +33,20 @@ const getType = (value) => {
 
 const getTypesOfItems = (arr) => {
     // Return array with types of items of given array
+    const typesArr = [];
+    for (const el of arr) {
+        typesArr.push(getType(el));
+    }
+    return typesArr;
 };
 
 const allItemsHaveTheSameType = (arr) => {
     // Return true if all items of array have the same type
+    if (arr.length > 0) {
+        const typesSet = new Set(getTypesOfItems(arr));
+        return typesSet.size === 1;
+    }
+    return true;
 };
 
 const getRealType = (value) => {
@@ -88,17 +98,9 @@ test('All values are numbers', allItemsHaveTheSameType([11, 12, 13]), true);
 
 test('All values are strings', allItemsHaveTheSameType(['11', '12', '13']), true);
 
-test(
-    'All values are strings but wait',
-    allItemsHaveTheSameType(['11', new String('12'), '13'])
-    // What the result?
-);
+test('All values are strings but wait', allItemsHaveTheSameType(['11', new String('12'), '13']), false);
 
-test(
-    'Values like a number',
-    allItemsHaveTheSameType([123, 123 / 'a', 1 / 0])
-    // What the result?
-);
+test('Values like a number', allItemsHaveTheSameType([123, 123 / 'a', 1 / 0]), true);
 
 test('Values like an object', allItemsHaveTheSameType([{}]), true);
 
