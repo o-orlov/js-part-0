@@ -34,11 +34,7 @@ const getType = (value) => {
 
 const getTypesOfItems = (arr) => {
     // Return array with types of items of given array
-    const typesArr = [];
-    for (const el of arr) {
-        typesArr.push(getType(el));
-    }
-    return typesArr;
+    return arr.map(getType);
 };
 
 const allItemsHaveTheSameType = (arr) => {
@@ -67,14 +63,22 @@ const getRealType = (value) => {
         return 'regexp';
     } else if (value instanceof Set) {
         return 'set';
+    } else if (value instanceof Map) {
+        return 'map';
     } else if (value instanceof Error) {
         return 'error';
+    } else if (value instanceof ArrayBuffer) {
+        return 'buffer';
+    } else if (value instanceof Blob) {
+        return 'blob';
     } else if (Number.isNaN(value)) {
         return 'NaN';
     } else if (value === null) {
         return 'null';
     } else if (value === Infinity) {
         return 'Infinity';
+    } else if (typeof value === 'function' && value.name === 'GeneratorFunction') {
+        return 'generator function';
     }
     return typeof value;
 };
@@ -109,13 +113,13 @@ const countRealTypes = (arr) => {
     const realTypesArr = getRealTypesOfItems(arr);
     realTypesArr.sort();
 
-    const realTypesMap = new Map();
+    const realTypesCounter = {};
     for (const realType of realTypesArr) {
-        const count = realTypesMap.get(realType);
-        realTypesMap.set(realType, count !== undefined ? count + 1 : 1);
+        const count = realTypesCounter[realType];
+        realTypesCounter[realType] = count !== undefined ? count + 1 : 1;
     }
 
-    return [...realTypesMap];
+    return Object.entries(realTypesCounter);
 };
 
 // Tests
@@ -166,6 +170,10 @@ const knownTypes = [
     123n,
     Error(),
     Symbol('foo'),
+    new Map(),
+    new ArrayBuffer(),
+    new Blob(['<html>…</html>'], { type: 'text/html' }),
+    function* () {}.constructor, // eslint-disable-line no-restricted-syntax, no-empty-function
 ];
 
 test('Check basic types', getTypesOfItems(knownTypes), [
@@ -185,6 +193,10 @@ test('Check basic types', getTypesOfItems(knownTypes), [
     'bigint',
     'object',
     'symbol',
+    'object',
+    'object',
+    'object',
+    'function',
 ]);
 
 test('Check real types', getRealTypesOfItems(knownTypes), [
@@ -204,6 +216,10 @@ test('Check real types', getRealTypesOfItems(knownTypes), [
     'bigint',
     'error',
     'symbol',
+    'map',
+    'buffer',
+    'blob',
+    'generator function',
 ]);
 
 testBlock('everyItemHasAUniqueRealType');
@@ -228,11 +244,15 @@ test('Counted unique types are sorted', countRealTypes([{}, null, true, !null, !
     ['object', 1],
 ]);
 
-testBlock('new String() VS String()');
+testBlock('string literal VS String()');
 
-test('All values are strings', allItemsHaveTheSameType('123', String('123')), true);
-test('Not all values are strings', allItemsHaveTheSameType('123', new String('123')), true);
+test('All values are strings', allItemsHaveTheSameType(['123', String('123')]), true);
 
-testBlock('null VS undefined');
+testBlock('areEqual');
 
 test('Arrays are not equal', areEqual([1, null, 3], [1, undefined, 3]), false);
+
+testBlock('Arrays');
+
+// eslint-disable-next-line no-array-constructor
+test('All values are arrays', allItemsHaveTheSameType([[1, 2, 3], Array(1, 2, 3), new Array(1, 2, 3)]), true);
