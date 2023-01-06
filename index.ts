@@ -42,7 +42,7 @@ const getTypesOfItems = (arr: unknown[]): string[] => {
 const allItemsHaveTheSameType = (arr: unknown[]): boolean => {
     // Return true if all items of array have the same type
     if (arr.length > 0) {
-        const typesSet = new Set(getTypesOfItems(arr));
+        const typesSet: Set<string> = new Set(getTypesOfItems(arr));
         return typesSet.size === 1;
     }
     return true;
@@ -87,7 +87,7 @@ const getRealType = (value: unknown): string => {
 
 const getRealTypesOfItems = (arr: unknown[]): string[] => {
     // Return array with real types of items of given array
-    const realTypesArr = [];
+    const realTypesArr: string[] = [];
     for (const el of arr) {
         realTypesArr.push(getRealType(el));
     }
@@ -98,11 +98,15 @@ const everyItemHasAUniqueRealType = (arr: unknown[]): boolean => {
     // Return true if there are no items in array
     // with the same real type
     if (arr.length > 0) {
-        const realTypesSet = new Set(getRealTypesOfItems(arr));
+        const realTypesSet: Set<string> = new Set(getRealTypesOfItems(arr));
         return realTypesSet.size === arr.length;
     }
     return true;
 };
+
+interface StringMap<T> {
+    [key: string]: T;
+}
 
 const countRealTypes = (arr: unknown[]): [string, number][] => {
     // Return an array of arrays with a type and count of items
@@ -112,10 +116,10 @@ const countRealTypes = (arr: unknown[]): [string, number][] => {
         return [];
     }
 
-    const realTypesArr = getRealTypesOfItems(arr);
+    const realTypesArr: string[] = getRealTypesOfItems(arr);
     realTypesArr.sort();
 
-    const realTypesCounter = {};
+    const realTypesCounter: StringMap<number> = {};
     for (const realType of realTypesArr) {
         const count = realTypesCounter[realType];
         realTypesCounter[realType] = count !== undefined ? count + 1 : 1;
