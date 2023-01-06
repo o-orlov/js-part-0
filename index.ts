@@ -153,6 +153,7 @@ test('All values are strings', allItemsHaveTheSameType(['11', '12', '13']), true
 
 test('All values are strings but wait', allItemsHaveTheSameType(['11', new String('12'), '13']), false);
 
+// @ts-expect-error
 test('Values like a number', allItemsHaveTheSameType([123, 123 / 'a', 1 / 0]), true);
 
 test('Values like an object', allItemsHaveTheSameType([{}]), true);
@@ -177,7 +178,7 @@ const knownTypes = [
     Error(),
     Symbol('foo'),
     new Map(),
-    new ArrayBuffer(),
+    new ArrayBuffer(0),
     new Blob(['<html>…</html>'], { type: 'text/html' }),
     function* () {}.constructor, // eslint-disable-line no-restricted-syntax, no-empty-function
 ];
@@ -232,6 +233,7 @@ testBlock('everyItemHasAUniqueRealType');
 
 test('All value types in the array are unique', everyItemHasAUniqueRealType([true, 123, '123']), true);
 
+// @ts-expect-error
 test('Two values have the same type', everyItemHasAUniqueRealType([true, 123, '123' === 123]), false);
 
 test('There are no repeated types in knownTypes', everyItemHasAUniqueRealType(knownTypes), true);
