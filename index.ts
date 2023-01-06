@@ -1,7 +1,5 @@
 // Test utils
 
-import { TupleType } from "./node_modules/typescript/lib/typescript";
-
 const testBlock = (name: string): void => {
     console.groupEnd();
     console.group(`# ${name}\n`);
