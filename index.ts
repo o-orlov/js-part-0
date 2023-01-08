@@ -1,18 +1,18 @@
 // Test utils
 
-const testBlock = (name) => {
+const testBlock = (name: string): void => {
     console.groupEnd();
     console.group(`# ${name}\n`);
 };
 
-const areEqual = (a, b) => {
+const areEqual = (a: unknown, b: unknown): boolean => {
     if (Array.isArray(a) && Array.isArray(b)) {
         return a.length === b.length && a.every((element, index) => areEqual(element, b[index]));
     }
     return a === b;
 };
 
-const test = (whatWeTest, actualResult, expectedResult) => {
+const test = (whatWeTest: string, actualResult: unknown, expectedResult: unknown): void => {
     if (areEqual(actualResult, expectedResult)) {
         console.log(`[OK] ${whatWeTest}\n`);
     } else {
@@ -27,26 +27,26 @@ const test = (whatWeTest, actualResult, expectedResult) => {
 
 // Functions
 
-const getType = (value) => {
+const getType = (value: unknown): string => {
     // Return string with a native JS type of value
     return typeof value;
 };
 
-const getTypesOfItems = (arr) => {
+const getTypesOfItems = (arr: unknown[]): string[] => {
     // Return array with types of items of given array
     return arr.map(getType);
 };
 
-const allItemsHaveTheSameType = (arr) => {
+const allItemsHaveTheSameType = (arr: unknown[]): boolean => {
     // Return true if all items of array have the same type
     if (arr.length > 0) {
-        const typesSet = new Set(getTypesOfItems(arr));
+        const typesSet: Set<string> = new Set(getTypesOfItems(arr));
         return typesSet.size === 1;
     }
     return true;
 };
 
-const getRealType = (value) => {
+const getRealType = (value: unknown): string => {
     // Return string with a “real” type of value.
     // For example:
     //     typeof new Date()       // 'object'
@@ -83,26 +83,30 @@ const getRealType = (value) => {
     return typeof value;
 };
 
-const getRealTypesOfItems = (arr) => {
+const getRealTypesOfItems = (arr: unknown[]): string[] => {
     // Return array with real types of items of given array
-    const realTypesArr = [];
+    const realTypesArr: string[] = [];
     for (const el of arr) {
         realTypesArr.push(getRealType(el));
     }
     return realTypesArr;
 };
 
-const everyItemHasAUniqueRealType = (arr) => {
+const everyItemHasAUniqueRealType = (arr: unknown[]): boolean => {
     // Return true if there are no items in array
     // with the same real type
     if (arr.length > 0) {
-        const realTypesSet = new Set(getRealTypesOfItems(arr));
+        const realTypesSet: Set<string> = new Set(getRealTypesOfItems(arr));
         return realTypesSet.size === arr.length;
     }
     return true;
 };
 
-const countRealTypes = (arr) => {
+interface StringMap<T> {
+    [key: string]: T;
+}
+
+const countRealTypes = (arr: unknown[]): [string, number][] => {
     // Return an array of arrays with a type and count of items
     // with this type in the input array, sorted by type.
     // Like an Object.entries() result: [['boolean', 3], ['string', 5]]
@@ -110,10 +114,10 @@ const countRealTypes = (arr) => {
         return [];
     }
 
-    const realTypesArr = getRealTypesOfItems(arr);
+    const realTypesArr: string[] = getRealTypesOfItems(arr);
     realTypesArr.sort();
 
-    const realTypesCounter = {};
+    const realTypesCounter: StringMap<number> = {};
     for (const realType of realTypesArr) {
         const count = realTypesCounter[realType];
         realTypesCounter[realType] = count !== undefined ? count + 1 : 1;
@@ -147,6 +151,7 @@ test('All values are strings', allItemsHaveTheSameType(['11', '12', '13']), true
 
 test('All values are strings but wait', allItemsHaveTheSameType(['11', new String('12'), '13']), false);
 
+// @ts-expect-error
 test('Values like a number', allItemsHaveTheSameType([123, 123 / 'a', 1 / 0]), true);
 
 test('Values like an object', allItemsHaveTheSameType([{}]), true);
@@ -171,7 +176,7 @@ const knownTypes = [
     Error(),
     Symbol('foo'),
     new Map(),
-    new ArrayBuffer(),
+    new ArrayBuffer(0),
     new Blob(['<html>…</html>'], { type: 'text/html' }),
     function* () {}.constructor, // eslint-disable-line no-restricted-syntax, no-empty-function
 ];
@@ -226,6 +231,7 @@ testBlock('everyItemHasAUniqueRealType');
 
 test('All value types in the array are unique', everyItemHasAUniqueRealType([true, 123, '123']), true);
 
+// @ts-expect-error
 test('Two values have the same type', everyItemHasAUniqueRealType([true, 123, '123' === 123]), false);
 
 test('There are no repeated types in knownTypes', everyItemHasAUniqueRealType(knownTypes), true);
