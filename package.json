@@ -1,7 +1,7 @@
 {
   "name": "js-part-0",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "repository": "git@github.com:ipetropolsky/js-part-0.git",
   "author": "'Ivan Petropolsky' <i.petropolsky@hh.ru>",
   "license": "MIT",
@@ -16,9 +16,8 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
     "lint-staged": "13.1.0",
-    "prettier": "2.8.0"
-  },
-  "dependencies": {
+    "prettier": "2.8.0",
     "typescript": "4.9.4"
-  }
+  },
+  "dependencies": {}
 }
